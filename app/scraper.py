@@ -5,13 +5,13 @@ import logging
 import time
 import sys
 
-# Fix import path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.database import SessionLocal
 from app.models import User
 
-# Setup logging
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 BASE_URL = "https://api.github.com/users"
 
-# Load token if available
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -29,18 +29,18 @@ HEADERS = {"Authorization": f"token {GITHUB_TOKEN}"} if GITHUB_TOKEN else {}
 
 
 def fetch_with_retry(url, params, retries=3):
-    """Fetch URL with retry on failure"""
+    
     for attempt in range(retries):
         try:
             response = requests.get(url, params=params, headers=HEADERS, timeout=10)
 
-            # Rate limit hit
+            
             if response.status_code == 403:
                 logger.warning("Rate limit hit. Waiting 60 seconds...")
                 time.sleep(60)
                 continue
 
-            # Success
+            
             if response.status_code == 200:
                 return response
 
@@ -88,7 +88,7 @@ def fetch_users():
                 "url": user.get("html_url")
             })
 
-        # Small delay to avoid rate limit
+        
         time.sleep(1)
 
     logger.info(f"Total users fetched: {len(all_users)}")
